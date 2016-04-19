@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--开发环境-->
+<configuration scan="=true" scanPeriod="60" debug="false">
+    <!--定义属性名供其它地方使用-->
+    <property name="app_name" value="springmvcDemolog"/>
+    <property name="log_home" value="../log"/>
+    <contextName>${app_name}</contextName>
+    <!--定义控制台输入格式-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!--设置编码格式-->
+        <encoder>
+            <pattern>${app_name} %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%-5level] %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志输出文件名称-->
+            <FileNamePattern>${log_home}/${app_name}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!--日志文件大小-->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+    <!--日志级别 trace<debug<info<warn<error<all<off-->
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+    <!--添加mybatis日志-->
+    <logger name="com.ibatis" level="DEBUG"/>
+    <logger name="com.ibatis.common.jdbc.SimpleDataSource" level="DEBUG"/>
+    <logger name="com.ibatis.common.jdbc.ScriptRunner" level="DEBUG"/>
+    <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG"/>
+    <!--JdbcTemplate的日志输出器 -->
+    <logger name="org.springframework.jdbc.core.StatementCreatorUtils" additivity="false" level="DEBUG"/>
+    <logger name="org.springframework.jdbc.core" additivity="true" level="DEBUG"/>
+    <!--java sql 日志-->
+    <logger name="java.sql.Connection" additivity="true" level="DEBUG"/>
+    <logger name="java.sql.Statement" additivity="true" level="DEBUG"/>
+    <logger name="java.sql.PreparedStatement" additivity="true" level="DEBUG"/>
+    <logger name="java.sql.ResultSet" additivity="true" level="DEBUG"/>
+</configuration>

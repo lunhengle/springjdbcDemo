@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!--配置扫描路径 dao 层-->
+    <context:component-scan base-package="com.lhl.dao"/>
+    <!--配置扫描路径 service 层-->
+    <context:component-scan base-package="com.lhl.service"/>
+    <!--引入属性文件-->
+    <context:property-placeholder location="jdbc.properties"/>
+    <!--配置数据源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <!--配置初始化大小，最小，最大-->
+        <property name="initialSize" value="1"/>
+        <property name="maxActive" value="5"/>
+        <property name="minIdle" value="1"/>
+        <!--获取连接等待时间-->
+        <property name="maxWait" value="60000"/>
+        <!--配置监控统计拦截的filter-->
+        <property name="filters" value="stat"/>
+        <!--间隔多久进行一次检测，检测需要关闭的连接，单位是毫秒-->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <!--配置一个连接池最小的生存时间，单位是毫秒-->
+        <property name="minEvictableIdleTimeMillis" value="300000"/>
+    </bean>
+    <!--配置spring 事物管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--配置事物扫描器-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!--配置jdbTemplate-->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--配置 namedParameterJdbcTemplate-->
+    <bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+</beans>
