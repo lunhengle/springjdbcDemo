@@ -2,7 +2,7 @@
 <!--开发环境-->
 <configuration scan="=true" scanPeriod="60" debug="false">
     <!--定义属性名供其它地方使用-->
-    <property name="app_name" value="springmvcDemolog"/>
+    <property name="app_name" value="springjdbcDemo"/>
     <property name="log_home" value="../log"/>
     <contextName>${app_name}</contextName>
     <!--定义控制台输入格式-->
