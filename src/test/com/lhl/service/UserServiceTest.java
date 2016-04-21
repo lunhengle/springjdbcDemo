@@ -1,10 +1,13 @@
 package com.lhl.service;
 
 import com.lhl.AbstractBaseTest;
+import com.lhl.entity.User;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Created by lenovo on 2016/4/19.
@@ -102,7 +105,6 @@ public class UserServiceTest extends AbstractBaseTest {
      * >>>>>2.被调用方法中设置事务传播属性是 propagation_requires_new
      * >>>>>2.1 调用方法中设置事务传播属性是 propagation_required
      * >>>>>在异常出现之前和异常出现之后 数据都没有更新成功 如果在正常项目中 不会 出现同一方法中 数据在一个事务中 数据前后不一致的情况。
-     * ?????这个结论和网上得到相反 网上 会出现同一方法中 数据在一个事务中  前后不一致的情况。有可能和用到的 阿里巴巴druid 有关系 没有验证?
      * >>>>>2.2 调用方法中 不设置事务属性
      * >>>>>在异常出现之前和异常出现之后 数据都没有更新成功 如果在正常项目中 会 出现同一方法中 数据在一个事务中 数据前后不一致的情况。
      * >>>>>3.被调用方法中设置事务传播属性是 propagation_supports
@@ -116,7 +118,6 @@ public class UserServiceTest extends AbstractBaseTest {
      * >>>>>直接调用出现异常 必须在有事务的方法中调用带有此属性的方法
      * >>>>>6.被调用方法设置的事务属性是 propagation_never
      * >>>>> 在异常出现之前和异常出现之后 数据都没有更新成功 如果在正常项目中 不会 出现同一方法中 数据在一个事务中 数据前后不一致的情况。
-     * ??????没有报在事务中异常 按解释 应该是不能再事务执行的 会报错 但是现在没有报这个错？是否和用的阿里巴巴 druid 有关系?
      * >>>>>标注：如果调用方法事务说明 默认就是以 propagation_required 传播级别执行。
      * >>>>>7.被调用方法设置事务属性是 propagation_nested
      * >>>>>在异常出现之前和异常出现之后 数据都没有更新成功 如果在正常项目中 不会 出现同一方法中 数据在一个事务中 数据前后不一致的情况。
@@ -156,8 +157,18 @@ public class UserServiceTest extends AbstractBaseTest {
      */
     @Test
     public void testPropagation() {
-        iUserService.modifyUser3("lunhengle44444", "99999", 3);
+        iUserService.modifyUser3("lunhengle44444", "77777", 3);
     }
 
+    /**
+     *
+     */
+    @Test
+    public void testIsolation() {
+        List<User> userList = iUserService.readAndModifyUser("lunhengle33333", 3);
+        for (User user : userList) {
+            logger.info("id>>>>>>>>>"+user.getId()+">>>>>>username>>>>>" + user.getUsername() + ">>>>>>password>>>>>" + user.getPassword());
+        }
+    }
 
 }

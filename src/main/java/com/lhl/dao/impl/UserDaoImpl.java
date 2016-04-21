@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,6 +52,7 @@ public class UserDaoImpl implements IUserDao {
      * @param id 用户ID
      * @return 大于零 有值 否则没有值
      */
+    @Transactional(readOnly = true)
     public boolean readUserCountById(long id) {
         String sql = "SELECT count(id) FROM user WHERE id = ?";
         Object[] params = new Object[]{id};
@@ -61,6 +65,7 @@ public class UserDaoImpl implements IUserDao {
      * @param id 用户ID
      * @return 返回用户信息
      */
+    @Transactional(readOnly = true)
     public User readUserById(long id) {
         String sql = "SELECT * FROM user WHERE id = ?";
         Object[] params = new Object[]{id};
@@ -73,6 +78,7 @@ public class UserDaoImpl implements IUserDao {
      * @param id 用户ID
      * @return Map用户
      */
+    @Transactional(readOnly = true)
     public Map<String, Object> readMapUserById(long id) {
         String sql = "SELECT * FROM user WHERE id = ?";
         Object[] params = new Object[]{id};
@@ -84,6 +90,7 @@ public class UserDaoImpl implements IUserDao {
      *
      * @return 返回所有的用户信息
      */
+    @Transactional(readOnly = true,isolation = Isolation.DEFAULT)
     public List<User> readUser() {
         String sql = "SELECT * FROM user";
         return this.jdbcTemplate.query(sql, UserRowMapper.init());
@@ -94,6 +101,7 @@ public class UserDaoImpl implements IUserDao {
      *
      * @return 用户map对象list.
      */
+    @Transactional(propagation = Propagation.REQUIRED)
     public List<Map<String, Object>> readMapUser() {
         String sql = "SELECT * FROM user";
         return this.jdbcTemplate.queryForList(sql);
@@ -127,6 +135,7 @@ public class UserDaoImpl implements IUserDao {
      * @param username 用户名称
      * @param id       用户ID
      */
+    @Transactional(propagation = Propagation.NESTED)
     public void modifyUsername(String username, long id) {
         String sql = "UPDATE user SET username=? WHERE id = ?";
         Object[] params = new Object[]{username, id};
@@ -139,6 +148,7 @@ public class UserDaoImpl implements IUserDao {
      * @param password 密码
      * @param id       用户ID
      */
+    @Transactional(propagation = Propagation.REQUIRED)
     public void modifyPassword(String password, long id) {
         String sql = "UPDATE user SET password = ? WHERE id = ?";
         Object[] params = new Object[]{password, id};
