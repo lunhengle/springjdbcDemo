@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -99,5 +100,39 @@ public class UserDaoTest extends AbstractBaseTest {
         for (Map<String, Object> userMap : userList) {
             logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> user.id=" + userMap.get("id") + " >>>>>>>>>>>>>>>>>>> user.username=" + userMap.get("username") + " >>>>>>>>>>>>>>>>>>>>> user.password=" + userMap.get("password"));
         }
+    }
+
+    /**
+     * 批量更新.
+     */
+    @Test
+    public void testBatchModify() {
+        List<User> userList = new ArrayList<User>();
+        User user = new User();
+        user.setId(4);
+        user.setPassword("9999999");
+        userList.add(user);
+        User user1 = new User();
+        user1.setId(3);
+        user1.setPassword("888888");
+        userList.add(user1);
+        iUserDao.modifyUserList(userList);
+    }
+
+    /**
+     * 批量插入.
+     */
+    @Test
+    public void testBatchAdd() {
+        List<User> userList = new ArrayList<User>();
+        User user = new User();
+        user.setUsername("helloworld1");
+        user.setPassword("9999999");
+        userList.add(user);
+        User user1 = new User();
+        user1.setUsername("helloworld2");
+        user1.setPassword("888888");
+        userList.add(user1);
+        iUserDao.addUserList(userList);
     }
 }

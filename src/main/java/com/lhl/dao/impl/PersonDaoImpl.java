@@ -4,6 +4,7 @@ import com.lhl.dao.IPersonDao;
 import com.lhl.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -147,4 +148,65 @@ public class PersonDaoImpl implements IPersonDao {
         parameterSource.addValue("id", id);
         this.namedParameterJdbcTemplate.update(sql, parameterSource);
     }
+
+    /**
+     * 批量更新.
+     *
+     * @param personList 更新数据
+     */
+    public void modifyPersonList(List<Person> personList) {
+        String sql = "UPDATE person SET phone=:phone WHERE  name LIKE :name";
+        MapSqlParameterSource[] parameterSources = new MapSqlParameterSource[personList.size()];
+        int i = 0;
+        for (Person person : personList) {
+            MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+            parameterSource.addValue("phone", person.getPhone());
+            parameterSource.addValue("name", "%" + person.getName() + "%");
+            parameterSources[i] = parameterSource;
+            i++;
+        }
+        namedParameterJdbcTemplate.batchUpdate(sql, parameterSources);
+    }
+
+    /**
+     * 批量插入.
+     *
+     * @param personList 更新数据
+     */
+    public void addPersonList(List<Person> personList) {
+        String sql = "INSERT INTO person (name,phone,address,email) VALUES(:name,:phone,:address,:email)";
+        MapSqlParameterSource[] parameterSources = new MapSqlParameterSource[personList.size()];
+        int i = 0;
+        for (Person person : personList) {
+            MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+            parameterSource.addValue("name", person.getName());
+            parameterSource.addValue("phone", person.getPhone());
+            parameterSource.addValue("address", person.getAddress());
+            parameterSource.addValue("email", person.getEmail());
+            parameterSources[i] = parameterSource;
+            i++;
+        }
+        namedParameterJdbcTemplate.batchUpdate(sql, parameterSources);
+    }
+
+    /**
+     * bean 方式更新.
+     *
+     * @param person 更新数据
+     */
+    public void modifyPerson1(Person person) {
+        String sql = "UPDATE person SET phone=:phone WHERE  name LIKE :name";
+        this.namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(person));
+    }
+
+    /**
+     * bean 方式插入.
+     *
+     * @param person 更新数据
+     */
+    public void addPerson1(Person person) {
+        String sql = "INSERT INTO person (name,phone,address,email) VALUES(:name,:phone,:address,:email)";
+        this.namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(person));
+    }
+
 }

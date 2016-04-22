@@ -5,6 +5,7 @@ import com.lhl.entity.User;
 import com.lhl.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -142,10 +143,10 @@ public class UserServiceImpl implements IUserService {
      * @param id       用户ID
      * @return 用户列表
      */
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.READ_UNCOMMITTED)
     public List<User> readAndModifyUser(String username, long id) {
-        List<User> userList = iUserDao.readUser();
         iUserDao.modifyUsername(username, id);
+        List<User> userList = iUserDao.readUser();
         return userList;
     }
 

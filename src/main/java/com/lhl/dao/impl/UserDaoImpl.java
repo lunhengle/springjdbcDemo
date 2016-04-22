@@ -3,6 +3,7 @@ package com.lhl.dao.impl;
 import com.lhl.dao.IUserDao;
 import com.lhl.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -90,7 +92,7 @@ public class UserDaoImpl implements IUserDao {
      *
      * @return 返回所有的用户信息
      */
-    @Transactional(readOnly = true,isolation = Isolation.DEFAULT)
+    @Transactional(readOnly = true)
     public List<User> readUser() {
         String sql = "SELECT * FROM user";
         return this.jdbcTemplate.query(sql, UserRowMapper.init());
@@ -135,11 +137,12 @@ public class UserDaoImpl implements IUserDao {
      * @param username 用户名称
      * @param id       用户ID
      */
-    @Transactional(propagation = Propagation.NESTED)
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
     public void modifyUsername(String username, long id) {
         String sql = "UPDATE user SET username=? WHERE id = ?";
         Object[] params = new Object[]{username, id};
         this.jdbcTemplate.update(sql, params);
+        int i = 100 / 0;
     }
 
     /**
@@ -153,6 +156,46 @@ public class UserDaoImpl implements IUserDao {
         String sql = "UPDATE user SET password = ? WHERE id = ?";
         Object[] params = new Object[]{password, id};
         this.jdbcTemplate.update(sql, params);
+    }
+
+    /**
+     * 批量更新.
+     *
+     * @param list 用户列表
+     */
+    public void modifyUserList(final List<User> list) {
+        String sql = "UPDATE user SET password=? WHERE id=?";
+        BatchPreparedStatementSetter batchPreparedStatementSetter = new BatchPreparedStatementSetter() {
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                preparedStatement.setString(1, list.get(i).getPassword());
+                preparedStatement.setLong(2, list.get(i).getId());
+            }
+
+            public int getBatchSize() {
+                return list.size();
+            }
+        };
+        this.jdbcTemplate.batchUpdate(sql, batchPreparedStatementSetter);
+    }
+
+    /**
+     * 批量插入.
+     *
+     * @param list 用户列表
+     */
+    public void addUserList(final List<User> list) {
+        String sql = "INSERT INTO user (username,password) VALUES(?,?)";
+        BatchPreparedStatementSetter batchPreparedStatementSetter = new BatchPreparedStatementSetter() {
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                preparedStatement.setString(1, list.get(i).getPassword());
+                preparedStatement.setLong(2, list.get(i).getId());
+            }
+
+            public int getBatchSize() {
+                return list.size();
+            }
+        };
+        this.jdbcTemplate.batchUpdate(sql, batchPreparedStatementSetter);
     }
 
 

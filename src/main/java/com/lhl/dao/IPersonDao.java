@@ -71,5 +71,33 @@ public interface IPersonDao {
      */
     void modifyName(String name, long id);
 
+    /**
+     * 批量更新.
+     *
+     * @param personList 更新数据
+     */
+    void modifyPersonList(List<Person> personList);
+
+    /**
+     * 批量插入.
+     *
+     * @param personList 更新数据
+     */
+    void addPersonList(List<Person> personList);
+
+    /**
+     * bean 方式更新.
+     *
+     * @param person 更新数据
+     */
+    void modifyPerson1(Person person);
+
+    /**
+     * bean 方式插入.
+     *
+     * @param person 更新数据
+     */
+    void addPerson1(Person person);
+
 
 }

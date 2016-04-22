@@ -35,7 +35,7 @@ import java.util.List;
  * 因为这个数据是没有提交的数据，那么另外一个事务读到的这个数据是脏数据，依据脏数据所做的操作是可能不正确的。
  * ----不可重复读：指在一个事务内，多次读同一个数据。在这个事务还没有结束时，另外一个事务也访问该同一数据(修改同一数据)。
  * 那么，在第一个事务中的两次读取数据之间，由于第二个事务的修改，第一个事务两次读到的数据可能不一样。这样就发生了在一个事务内两次读到的数据是不一样的，因此称为不可重复读。
- * ----幻读：指当事务不是独立执行发生的一种现象，例如第一个事务对一个表中的数据进行了修改，这种修改涉及到表中的全部数据行。同时，第二个事务也修改这个表中的数据，这种修改是向表中插入一样新的数据。
+ * ----幻读：指当事务不是独立执行发生的一种现象，例如第一个事务对一个表中的数据进行了修改，这种修改涉及到表中的全部数据行。同时，第二个事务也修改这个表中的数据，这种修改是向表中插入一条新的数据。
  * 那么以后就会发生操作第一个事务的用户发现表中还有没有修改的数据行，这好像发生了幻觉一样。
  */
 
@@ -161,13 +161,16 @@ public class UserServiceTest extends AbstractBaseTest {
     }
 
     /**
-     *
+     * 目的：测试事务隔离级别.
+     * >>>> 如果读取在前修改在后 事务隔离级别不起作用
+     * 先决条件：系统application_core.xml配置文件中 启用事务注解扫描 将全局事务配置注释掉
+     * 1.service 层默认 在
      */
     @Test
     public void testIsolation() {
-        List<User> userList = iUserService.readAndModifyUser("lunhengle33333", 3);
+        List<User> userList = iUserService.readAndModifyUser("lunhengle77777", 3);
         for (User user : userList) {
-            logger.info("id>>>>>>>>>"+user.getId()+">>>>>>username>>>>>" + user.getUsername() + ">>>>>>password>>>>>" + user.getPassword());
+            logger.info("id>>>>>>>>>" + user.getId() + ">>>>>>username>>>>>" + user.getUsername() + ">>>>>>password>>>>>" + user.getPassword());
         }
     }
 

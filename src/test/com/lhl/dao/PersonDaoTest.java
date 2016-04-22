@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -92,5 +93,68 @@ public class PersonDaoTest extends AbstractBaseTest {
     @Test
     public void testRemovePerson() {
         iPersonDao.removePerson(1);
+    }
+
+    /**
+     * 批量修改.
+     */
+    @Test
+    public void testBatchModify() {
+        List<Person> personList = new ArrayList<Person>();
+        Person person = new Person();
+        person.setName("伦恒");
+        person.setPhone("11000000000");
+        personList.add(person);
+        Person person1 = new Person();
+        person1.setName("恒乐");
+        person1.setPhone("12000000000");
+        personList.add(person1);
+        iPersonDao.modifyPersonList(personList);
+    }
+
+    /**
+     * 批量增加
+     */
+    @Test
+    public void testBatchAdd() {
+        List<Person> personList = new ArrayList<Person>();
+        Person person = new Person();
+        person.setName("lunhengle");
+        person.setPhone("11000000000");
+        person.setEmail("1231313213@qq.com");
+        person.setAddress("北京市海淀区");
+        personList.add(person);
+        Person person1 = new Person();
+        person1.setName("lunhengle");
+        person1.setPhone("12000000000");
+        person1.setEmail("ttttt@qq.com");
+        person1.setAddress("北京市朝阳区");
+        personList.add(person1);
+        iPersonDao.addPersonList(personList);
+    }
+
+    /**
+     * bean 方式修改.
+     * 注：此方法必须like 全称 比如 表中字段数据是 伦恒乐 如果条件值是 伦恒 或 恒乐 将更新不到数据
+     */
+    @Test
+    public void testBeanModify() {
+        Person person = new Person();
+        person.setName("伦恒乐");
+        person.setPhone("12300000000");
+        iPersonDao.modifyPerson1(person);
+    }
+
+    /**
+     * bean 方式插入数据.
+     */
+    @Test
+    public void testBeanAdd() {
+        Person person = new Person();
+        person.setName("789456");
+        person.setPhone("11000000000");
+        person.setEmail("1231313213@qq.com");
+        person.setAddress("北京市海淀区");
+        iPersonDao.addPerson1(person);
     }
 }

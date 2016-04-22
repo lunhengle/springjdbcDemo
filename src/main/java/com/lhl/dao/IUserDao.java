@@ -1,5 +1,6 @@
 package com.lhl.dao;
 
+import com.lhl.entity.Person;
 import com.lhl.entity.User;
 
 import java.util.List;
@@ -78,6 +79,20 @@ public interface IUserDao {
      * @param id       用户ID
      */
     void modifyPassword(String password, long id);
+
+    /**
+     * 批量更新.
+     *
+     * @param list 用户列表
+     */
+    void modifyUserList(List<User> list);
+
+    /**
+     * 批量插入.
+     *
+     * @param list 用户列表
+     */
+    void addUserList(List<User> list);
 
 
 }
