@@ -49,7 +49,7 @@ public class ImageTest extends AbstractBaseTest {
         while (i <= 35) {
             url = "/subject/defalutImage/shoot/";
             File file = new File("D:\\subject\\shoot\\" + i + ".jpg");
-            modifyWidthAndFile(file, 1, 3, url);
+            modifyWidthAndFile(file, 1, 4, url);
             i++;
         }
         //更新其他

@@ -36,21 +36,21 @@
     <!--配置注解事务扫描器-->
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <!--配置全局的事务-->
-    <!--<tx:advice id="txadvice" transaction-manager="transactionManager">
+    <tx:advice id="txadvice" transaction-manager="transactionManager">
         <tx:attributes>
             <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="modify*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="remove*" propagation="REQUIRED" rollback-for="Exception"/>
-            &lt;!&ndash;默认只读&ndash;&gt;
+            <!---默认只读-->
             <tx:method name="*" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
         </tx:attributes>
-    </tx:advice>-->
+    </tx:advice>
     <!--将事务配置到service层-->
-    <!--<aop:config>
-        &lt;!&ndash;其中第一个*代表返回值，第二*代表dao下子包，第三个*代表方法名 （..）代表方法参数&ndash;&gt;
+    <aop:config>
+        <!--其中第一个*代表返回值，第二*代表dao下子包，第三个*代表方法名 （..）代表方法参数-->
         <aop:pointcut id="pointcut" expression="execution(* com.lhl.service.*.*(..))"/>
         <aop:advisor pointcut-ref="pointcut" advice-ref="txadvice"/>
-    </aop:config>-->
+    </aop:config>
     <!--配置jdbTemplate-->
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
